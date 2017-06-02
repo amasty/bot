@@ -1,5 +1,5 @@
 import settings
-from commands import _command_system
+from commands import _system
 
 
 def get_commands_list():
@@ -9,7 +9,7 @@ def get_commands_list():
         str: список комманд бота
     """
     text = ''
-    for c in _command_system.commands:
+    for c in _system.commands:
         if c.name in settings.commands_black_list:
             continue
 

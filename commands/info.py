@@ -1,17 +1,27 @@
 import utils
-from commands import _command_system
+
+from commands._system import Command
+from commands._system import register
 
 
-def info(data):
-    message = "Вот мои команды:\n{}".format(
-        utils.get_commands_list()
-    )
+@register
+class Hello(Command):
+    name = 'info'
+    keys = ['помощь', 'помоги', 'help']
+    description = 'покажу список команд'
 
-    return message, None
+    def do(self, data):
+        """ Показать список комманд
 
+        Args:
+            data (dict): данные входящего сообщения от пользователя
 
-info_command = _command_system.Command()
-info_command.name = 'info'
-info_command.keys = ['помощь', 'помоги', 'help']
-info_command.description = 'покажу список команд'
-info_command.process = info
+        Returns:
+            str: текст сообщения для пользователя
+            None: пустой аттач
+        """
+        message = "Вот мои команды:\n{}".format(
+            utils.get_commands_list()
+        )
+
+        return message, None

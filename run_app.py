@@ -2,7 +2,6 @@ import logging
 
 import settings
 
-
 from flask import Flask
 from flask import json
 from flask import request
@@ -10,8 +9,8 @@ from flask import request
 from handlers import message
 
 
-app = Flask(__name__)
 logging.basicConfig(level=logging.INFO, format='(%(levelname)s) %(asctime)s: %(message)s', datefmt='%d-%m-%Y %H:%M:%S')
+app = Flask(__name__)
 
 
 @app.route('/')

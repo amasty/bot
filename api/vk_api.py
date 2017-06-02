@@ -9,7 +9,7 @@ api = vk.API(session, v=5.0)
 
 
 def get_random_wall_picture(group_id):
-    """ Получение случайного фотко со стены паблика
+    """ Получение случайного фото со стены паблика
 
     Args:
         group_id: id палбика
@@ -19,10 +19,10 @@ def get_random_wall_picture(group_id):
     """
     max_num = api.photos.get(owner_id=group_id, album_id='wall', count=0)['count']
     num = random.randint(1, max_num)
-    photo = api.photos.get(owner_id=str(group_id), album_id='wall', count=1, offset=num)['items'][0]['id']
-    attachment = 'photo' + str(group_id) + '_' + str(photo)
 
-    return attachment
+    photo = api.photos.get(owner_id=str(group_id), album_id='wall', count=1, offset=num)['items'][0]['id']
+
+    return 'photo{}_{}'.format(group_id, photo)
 
 
 def send_message(user_id, message, attachment=''):
@@ -56,6 +56,4 @@ def upload_attach2message(photo):
             access_token=settings.token, server=data['server'], photo=data['photo'], hash=data['hash']
         )
 
-        attachment = 'photo{}_{}'.format(photo[0]['owner_id'], photo[0]['id'])
-
-        return attachment
+        return 'photo{}_{}'.format(photo[0]['owner_id'], photo[0]['id'])

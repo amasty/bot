@@ -1,27 +1,31 @@
-import os
 import logging
-import importlib
 
 import utils
 import peewee
+import commands.cat
+import commands.info
+import commands.hello
+import commands.panda
+import commands.stories
 
 from api import vk_api
 from models.await import Await
-from commands._command_system import commands
-
-
-def load_modules():
-    files = os.listdir("commands")
-    modules = filter(lambda x: x.endswith('.py') and not x.startswith('_'), files)
-    for m in modules:
-        importlib.import_module("commands." + m[0:-3])
+from commands._system import commands
 
 
 def get_answer(data):
+    """ Получаем ответ для пользователя из модулей бота
+
+    Args:
+        data (dict): данные входящего сообщения от пользователя
+
+    Returns:
+        str: текст сообщения для пользователя
+        str: аттач в сообщении
+    """
     body = data['body'].lower()
-    message = "Прости, не понимаю тебя. Напиши 'помощь', чтобы узнать мои команды"
+    message = None
     attachment = None
-    min_distance = float(len(body))
 
     try:
         await_command = Await.get(Await.user_id == data['user_id'])
@@ -30,10 +34,11 @@ def get_answer(data):
 
     probably_key = None
     probably_command = None
+    min_distance = len(body)
     for command in commands:
         # если модуль ожиает от пользователя сообщения, сразу передаем управление в модуль
         if await_command and command.await == await_command.command:
-            return command.process(data, await=await_command)
+            return command.do(data, await=await_command)
 
         # иначе пытается подобрать модуль на основе комманды
         for key in command.keys:
@@ -43,26 +48,33 @@ def get_answer(data):
                 probably_command = command
                 probably_key = key
 
+                # минимальная дистанция без опечаток
                 if min_distance == 0:
-                    return command.process(data)
+                    return command.do(data)
 
-    # не подобрали модуль, пытаемся подобрать с учетом опечаток
+    # выбираем модуль с минимальным расстоянием
     if min_distance < len(body) * 0.4:
-        message, attachment = probably_command.process(data)
+        message, attachment = probably_command.do(data)
         message = "Я понял ваш запрос как '{}'\n\n{}".format(probably_key, message)
 
     return message, attachment
 
 
 def create_answer(data):
-    load_modules()
+    """ Создаем ответ пользователю
 
+    Args:
+        data (dict): данные входящего сообщения от пользователя
+
+    Returns:
+        str: текст сообщения для пользователя
+        str: аттач в сообщении
+    """
     logging.info("Incoming msg {}".format(data))
-    user_id = data['user_id']
 
     message, attachment = get_answer(data)
     if message is None:
         message = "Прости, не понимаю тебя. Напиши 'помощь', чтобы узнать мои команды"
 
-    logging.info("Outcoming msg to: '{}', msg: '{}', attch: '{}'".format(user_id, message, attachment))
-    vk_api.send_message(user_id, message, attachment)
+    logging.info("Outcoming msg to: '{}', msg: '{}', attch: '{}'".format(data['user_id'], message, attachment))
+    vk_api.send_message(data['user_id'], message, attachment)

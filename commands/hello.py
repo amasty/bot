@@ -1,17 +1,27 @@
 import utils
-from commands import _command_system
+
+from commands._system import Command
+from commands._system import register
 
 
-def hello(data):
-    message = "Привет, друг!\nЯ чат-бот, вот мои команды:\n{}".format(
-        utils.get_commands_list()
-    )
+@register
+class Hello(Command):
+    name = 'hello'
+    keys = ['привет', 'hello', 'дратути', 'здравствуй', 'здравствуйте']
+    description = 'поприветствую тебя'
 
-    return message, None
+    def do(self, data):
+        """ Сказать привет пользователю и показать список комманд
 
+        Args:
+            data (dict): данные входящего сообщения от пользователя
 
-hello_command = _command_system.Command()
-hello_command.name = 'hello'
-hello_command.keys = ['привет', 'hello', 'дратути', 'здравствуй', 'здравствуйте']
-hello_command.description = 'поприветствую тебя'
-hello_command.process = hello
+        Returns:
+            str: текст сообщения для пользователя
+            None: пустой аттач
+        """
+        message = "Привет, друг!\nЯ чат-бот, вот мои команды:\n{}".format(
+            utils.get_commands_list()
+        )
+
+        return message, None
