@@ -48,7 +48,7 @@ def upload_attach2message(photo):
     data = api.photos.getMessagesUploadServer(access_token=settings.token)
     upload_url = data['upload_url']
 
-    r = requests.post(upload_url, files={'photo': open('1.png', 'rb')})
+    r = requests.post(upload_url, files={'photo': photo})
     if r.status_code == requests.codes.ok:
         data = r.json()
 
