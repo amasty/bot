@@ -7,6 +7,7 @@ import commands.info
 import commands.hello
 import commands.panda
 import commands.stories
+import commands.bulls_cows
 
 from api import vk_api
 from models.await import Await

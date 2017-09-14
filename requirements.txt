@@ -1,4 +1,5 @@
-requests==2.17.3
-Flask==0.12.2
-peewee==2.10.1
-vk==2.0.2
+requests
+Flask
+peewee
+vk
+psycopg2
