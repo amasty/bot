@@ -10,7 +10,7 @@ import commands.stories
 import commands.bulls_cows
 
 from api import vk_api
-from models.await import Await
+from models.userexpectation import UserExpectation
 from commands._system import commands
 
 
@@ -28,18 +28,19 @@ def get_answer(data):
     message = None
     attachment = None
 
+    # возможно какой-то модуль уже ждет ответа от пользователя
     try:
-        await_command = Await.get(Await.user_id == data['user_id'])
+        user_expectations = UserExpectation.get(UserExpectation.user_id == data['user_id'])
     except peewee.DoesNotExist:
-        await_command = None
+        user_expectations = None
 
     probably_key = None
     probably_command = None
     min_distance = len(body)
     for command in commands:
         # если модуль ожиает от пользователя сообщения, сразу передаем управление в модуль
-        if await_command and command.await == await_command.command:
-            return command.do(data, await=await_command)
+        if user_expectations and command.name == user_expectations.command:
+            return command.do(data, user_expectations=user_expectations)
 
         # иначе пытается подобрать модуль на основе комманды
         for key in command.keys:

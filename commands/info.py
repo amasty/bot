@@ -10,18 +10,15 @@ class Hello(Command):
     keys = ['помощь', 'помоги', 'help']
     description = 'покажу список команд'
 
-    def do(self, data):
+    def _do(self):
         """ Показать список комманд
-
-        Args:
-            data (dict): данные входящего сообщения от пользователя
 
         Returns:
             str: текст сообщения для пользователя
-            None: пустой аттач
+
         """
         message = "Вот мои команды:\n{}".format(
             utils.get_commands_list()
         )
 
-        return message, None
+        return utils.show_message(message)

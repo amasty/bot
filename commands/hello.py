@@ -10,18 +10,15 @@ class Hello(Command):
     keys = ['привет', 'hello', 'дратути', 'здравствуй', 'здравствуйте']
     description = 'поприветствую тебя'
 
-    def do(self, data):
+    def _do(self):
         """ Сказать привет пользователю и показать список комманд
-
-        Args:
-            data (dict): данные входящего сообщения от пользователя
 
         Returns:
             str: текст сообщения для пользователя
-            None: пустой аттач
+
         """
         message = "Привет, друг!\nЯ чат-бот, вот мои команды:\n{}".format(
             utils.get_commands_list()
         )
 
-        return message, None
+        return utils.show_message(message)

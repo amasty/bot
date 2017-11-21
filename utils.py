@@ -2,6 +2,10 @@ import settings
 from commands import _system
 
 
+def show_message(message, attachment=''):
+    return message, attachment
+
+
 def get_commands_list():
     """ Список комманд бота
 
